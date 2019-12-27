@@ -17,8 +17,11 @@ jobs:
     - name: Run tests
       run: lein test
 
+    - name: Check format
+      run: lein cljfmt check
+
     - name: Generate website
-      run: lein run
+      run: lein run site
     
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v2

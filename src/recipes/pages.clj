@@ -4,13 +4,10 @@
    [recipes.generate :refer [generate for-merge]]
    [recipes.read :refer [all-tags]]))
 
-(defmulti slug class)
-(defmethod slug clojure.lang.Keyword [s] (name s)) ; TODO: use protocols
-
 (def pages
   {"index.html" [:index-page]
    "tag" (for-merge [tag all-tags]
-                    {(str (slug tag)) [:recipes-page tag]})})
+                    {(name tag) [:recipes-page tag]})})
 
 (def generate-files (partial generate "" pages))
 

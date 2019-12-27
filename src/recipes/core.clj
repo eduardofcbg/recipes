@@ -4,21 +4,20 @@
             [recipes.views :refer [format-view]]
             [recipes.pages :refer [generate-files]]))
 
-(def folder "site")
-
-(defn delete-files []
+(defn delete-files [folder]
   (let [f (file folder)]
     (when (.exists f)
       (doseq [file (reverse (file-seq f))]
         (delete-file file)))))
 
 (defn format-path [folder name]
-  (if-not (ends-with? name ".html")
+  (if-not
+  (ends-with? name ".html")
     (str folder "/" name "/index.html")
     (str folder "/" name)))
 
-(defn -main []
-  (delete-files)
+(defn -main [folder]
+  (delete-files folder)
   (doseq [[path content] (seq (generate-files format-view format-path))
           :let [relative-path (str folder path)]]
     (make-parents relative-path)

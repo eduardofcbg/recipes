@@ -3,7 +3,7 @@
             [recipes.read :refer :all]
             [recipes.pages :refer [path-for]]))
 
-(defmulti view (fn [[dispacher & _]] dispacher))
+(defmulti view (fn [[view-id & _]] view-id))
 
 (defmethod view :index-page [_]
   [:ul
