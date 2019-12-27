@@ -8,18 +8,18 @@
 
 (defn delete-files []
   (let [f (file folder)]
-       (when (.exists f)
-             (doseq [file (reverse (file-seq f))]
-                    (delete-file file)))))
+    (when (.exists f)
+      (doseq [file (reverse (file-seq f))]
+        (delete-file file)))))
 
 (defn format-path [folder name]
   (if-not (ends-with? name ".html")
-          (str folder "/" name "/index.html")
-          (str folder "/" name)))
+    (str folder "/" name "/index.html")
+    (str folder "/" name)))
 
 (defn -main []
   (delete-files)
   (doseq [[path content] (seq (generate-files format-view format-path))
-         :let [relative-path (str folder path)]]
-         (make-parents relative-path)
-         (spit relative-path content)))
+          :let [relative-path (str folder path)]]
+    (make-parents relative-path)
+    (spit relative-path content)))
