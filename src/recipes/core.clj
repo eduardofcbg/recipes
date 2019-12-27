@@ -6,8 +6,10 @@
 (def folder "site")
 
 (defn delete-files []
-  (doseq [file (reverse (file-seq (file folder)))]
-     (delete-file file)))
+  (let [f (file folder)]
+       (when (.exists f)
+             (doseq [file (reverse (file-seq f))]
+                    (delete-file file)))))
 
 (defn -main []
   (delete-files)
