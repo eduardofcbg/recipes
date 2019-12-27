@@ -10,7 +10,7 @@
 (def pages
   {"index.html" [:index-page]
    "tag" (for-merge [tag all-tags]
-                    {(str (slug tag) ".html") [:recipes-page tag]})})
+                    {(str (slug tag)) [:recipes-page tag]})})
 
 (def generate-files (partial generate "" pages))
 
