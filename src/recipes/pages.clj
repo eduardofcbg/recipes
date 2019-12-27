@@ -8,12 +8,16 @@
 (defmethod slug clojure.lang.Keyword [s] (name s)) ; TODO: use protocols
 
 (def pages
-  {"index" [:index-page]
+  {"index.html" [:index-page]
    "tag" (for-merge [tag all-tags]
-                    {(slug tag) [:recipes-page tag]})})
+                    {(str (slug tag) ".html") [:recipes-page tag]})})
 
 (def generate-files (partial generate "" pages))
 
+(defn make-relative [path] (str "." path))
+
 (defn path-for [& view]
-  (get (clojure.set/map-invert (generate-files identity))
-       view))
+	(-> (generate-files identity)
+					(map-invert)
+					(get view)
+				 (make-relative)))

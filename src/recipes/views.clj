@@ -18,4 +18,4 @@
      [:ul (for [source (:sources recipe)]
             [:li [:a {:href source} source]])]]))
 
-(defn format [v] (html (view v)))
+(defn format-view [v] (html (view v)))
