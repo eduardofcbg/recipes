@@ -14,10 +14,14 @@
 
 (def generate-files (partial generate "" pages))
 
+(def link->view
+	(generate-files identity
+																	(fn [folder name] (str folder "/" name))))
+
 (defn make-relative [path] (str "." path))
 
 (defn path-for [& view]
-	(-> (generate-files identity)
+	(-> link->view
 					(map-invert)
 					(get view)
 				 (make-relative)))
