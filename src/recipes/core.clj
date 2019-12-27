@@ -12,7 +12,7 @@
 
 (defn format-path [folder name]
   (if-not
-  (ends-with? name ".html")
+   (ends-with? name ".html")
     (str folder "/" name "/index.html")
     (str folder "/" name)))
 

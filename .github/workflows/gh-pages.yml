@@ -17,7 +17,7 @@ jobs:
     - name: Run tests
       run: lein test
 
-    - name: Check format
+    - name: Check formatting
       run: lein cljfmt check
 
     - name: Generate website
