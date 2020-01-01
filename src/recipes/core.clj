@@ -1,24 +1,19 @@
 (ns recipes.core
   (:require [clojure.string :refer [ends-with?]]
             [clojure.java.io :refer [file delete-file make-parents]]
-            [recipes.views :refer [format-view]]
-            [recipes.pages :refer [generate-files]]))
+            [recipes.views :refer [view]]
+            [recipes.pages :refer [pages generate ensure-index]]))
 
-(defn delete-files [folder]
+(defn delete-generated [folder]
   (let [f (file folder)]
     (when (.exists f)
       (doseq [file (reverse (file-seq f))]
         (delete-file file)))))
 
-(defn format-path [folder name]
-  (if-not
-   (ends-with? name ".html")
-    (str folder "/" name "/index.html")
-    (str folder "/" name)))
-
 (defn -main [folder]
-  (delete-files folder)
-  (doseq [[path content] (seq (generate-files format-view format-path))
-          :let [relative-path (str folder path)]]
-    (make-parents relative-path)
-    (spit relative-path content)))
+  (delete-generated folder)
+  (doseq [[path content] (seq (generate pages view))
+          :let [full-path (conj folder (ensure-index path))
+          						filesystem-path (join "/" full-path)]] ; TODO: separator
+    (make-parents filesystem-path)
+    (spit filesystem-path content)))
