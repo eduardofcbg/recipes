@@ -1,6 +1,7 @@
 (ns recipes.core
-  (:require [clojure.string :refer [ends-with?]]
-            [clojure.java.io :refer [file delete-file make-parents]]
+  (:import java.io.File)
+  (:require [clojure.java.io :refer [file delete-file make-parents]]
+            [clojure.string :refer [join]]
             [recipes.views :refer [view]]
             [recipes.pages :refer [pages generate ensure-index]]))
 
@@ -10,10 +11,12 @@
       (doseq [file (reverse (file-seq f))]
         (delete-file file)))))
 
+(def not-index #{".html" ".js"})
+
 (defn -main [folder]
   (delete-generated folder)
-  (doseq [[path content] (seq (generate pages view))
-          :let [full-path (conj folder (ensure-index path))
-          						filesystem-path (join "/" full-path)]] ; TODO: separator
+  (doseq [[path content] (seq (generate pages))
+          :let [full-path (into [folder] (ensure-index path not-index))
+          						filesystem-path (join (java.io.File/separator) full-path)]]
     (make-parents filesystem-path)
-    (spit filesystem-path content)))
+    (spit filesystem-path (view content))))

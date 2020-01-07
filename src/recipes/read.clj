@@ -13,3 +13,5 @@
   (let [recipes (:recipes website)
         has-tag? (fn [recipe] (contains? (:tags recipe) tag))]
     (filter has-tag? recipes)))
+
+(def static-files {"lib.js" "alert('lixo')"})
