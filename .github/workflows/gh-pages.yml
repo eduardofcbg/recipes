@@ -19,6 +19,8 @@ jobs:
 
     - name: Generate website
       run: lein run site
+      env:
+        BASE_URL: ${{ github.event.repository.name }}
     
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v2

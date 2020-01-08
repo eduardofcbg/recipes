@@ -1,5 +1,4 @@
 (ns recipes.pages
-  (:import java.net.URI)
   (:require
    [clojure.set :refer [map-invert]]
    [clojure.string :refer [join ends-with? includes?]]
@@ -32,11 +31,18 @@
       full-path
       (concat path [name "index.html"]))))
 
+(defonce base-url
+	(System/getenv "BASE_URL")) ; BAD, works for now
+
+(when-not base-url
+	(throw (Exception. "BASE_URL enviroment variable not set!")))
+
 (defn as-url [path]
-  (str (URI. (str "/" (join "/" path)))))
+	(let [relative-path (join "/" path)]
+						(str base-url "/" relative-path)))
 
 (defn path-for [& view]
-  (-> (generate pages) ;; TODO: memo
-      (map-invert)
+  (-> (generate pages)
+      (map-invert) ; TODO: memoize
       (get view)
       (as-url)))
