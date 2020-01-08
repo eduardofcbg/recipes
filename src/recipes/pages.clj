@@ -34,11 +34,10 @@
 (defonce base-url
 	(System/getenv "BASE_URL")) ; BAD, works for now
 
-(when-not base-url
-	(throw (Exception. "BASE_URL enviroment variable not set!")))
-
 (defn as-url [path]
-	(let [relative-path (join "/" path)]
+	(let [relative-path (join "/" path)
+							_ (when-not base-url ; Fix this later
+																			(throw (Exception. "BASE_URL enviroment variable not set!")))]
 						(str base-url "/" relative-path)))
 
 (defn path-for [& view]
