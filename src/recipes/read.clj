@@ -1,12 +1,26 @@
 (ns recipes.read
-  (:require [clojure.set :refer [union]]))
+  (:require
+   [clojure.java.io :refer [resource]]
+   [clojure.set :refer [union]]))
 
-(def website {:recipes [{:title "Savory souffle"
-                         :description "Works every time"
-                         :sources []
+(defn- read-resource  [path]
+  (slurp (resource path)))
+
+(defn public []
+  {"script.js" (read-resource  "public/script.js")
+   "main.css" (read-resource  "public/main.css")})
+
+; Read from markdown or database for example...
+
+(def website {:recipes [{:title "Sweet souffle"
+                         :description "Creme patissiere base"
+                         :sources ["https://www.thefrenchcookingacademy.com/recipe/pastry-cream/"]
+                         :tags #{:sweet :souffle}}
+                        {:title "Savory souffle"
+                         :description "Bechamel base"
                          :tags #{:savory :souffle}}]})
 
-(def all-tags
+(defn all-tags []
   (apply union (map :tags (:recipes website))))
 
 (defn recipes-tag [tag]
@@ -14,4 +28,4 @@
         has-tag? (fn [recipe] (contains? (:tags recipe) tag))]
     (filter has-tag? recipes)))
 
-(def static-files {"lib.js" "alert('lixo')"})
+; Functions here should be memoized if called in different views

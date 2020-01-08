@@ -1,18 +1,19 @@
 (ns recipes.pages
+  (:import java.net.URI)
   (:require
    [clojure.set :refer [map-invert]]
    [clojure.string :refer [join ends-with? includes?]]
-   [recipes.read :refer :all]))
+   [recipes.read :refer [public all-tags recipes-tag]]))
 
 (defmacro for-merge [seq-exprs body-expr]
   `(apply merge (for ~seq-exprs ~body-expr)))
 
 (def pages
-  {"index.html" [:index-page]
-   "tag" (for-merge [tag all-tags]
-                    {(name tag) [:recipes-page tag]})
-   "static" (for-merge [[name _] (seq static-files)]
-                       {name [:static-page name]})})
+  {"index.html" [:index]
+   "tag" (for-merge [tag (all-tags)]
+                    {(name tag) [:recipes tag]})
+   "public" (for-merge [[name _] (seq (public))]
+                       {name [:public name]})})
 
 (defn generate
   ([website]
@@ -31,12 +32,11 @@
       full-path
       (concat path [name "index.html"]))))
 
-(defn as-url [path] (str "." (join "/" path))) ;; Url encode
+(defn as-url [path]
+  (str (URI. (str "/" (join "/" path)))))
 
-(defn path-for [_ _] :static-page)
-
-; (defn path-for [website view]
-;   (-> (generate website) ;; TODO: memo
-;       (map-invert)
-;       (get view)
-;       (as-url)))
+(defn path-for [& view]
+  (-> (generate pages) ;; TODO: memo
+      (map-invert)
+      (get view)
+      (as-url)))
