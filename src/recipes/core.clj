@@ -17,6 +17,6 @@
   (delete-generated folder)
   (doseq [[path content] (seq (generate pages))
           :let [full-path (into [folder] (ensure-index path not-index))
-          						filesystem-path (join (java.io.File/separator) full-path)]]
+                filesystem-path (join (java.io.File/separator) full-path)]]
     (make-parents filesystem-path)
     (spit filesystem-path (view content))))

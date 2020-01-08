@@ -23,19 +23,19 @@
     (is (= (generate website) expected))))
 
 (deftest generate-handles-with-view
-		(testing "Generate pages with vector inside vector instead of map inside map")
-			(let [website {"recipe" {"flavours" {"strawberry" [:strawberry]}}}
-									expected {["recipe" "flavours" "strawberry"] [:strawberry]}]
-									(is (= (generate website) expected))))
+  (testing "Generate pages with vector inside vector instead of map inside map")
+  (let [website {"recipe" {"flavours" {"strawberry" [:strawberry]}}}
+        expected {["recipe" "flavours" "strawberry"] [:strawberry]}]
+    (is (= (generate website) expected))))
 
 (deftest ensure-index-html
-	(testing "Does not need to ensure index folder")
-		(let [path ["home" "index.html"]
-								expected ["home" "index.html"]]
-								(is (= (ensure-index path #{".html"}) expected))))
+  (testing "Does not need to ensure index folder")
+  (let [path ["home" "index.html"]
+        expected ["home" "index.html"]]
+    (is (= (ensure-index path #{".html"}) expected))))
 
 (deftest ensure-index-success
-	(testing "Creates folder for holding index.html")
-		(let [path ["home" "recipe"]
-								expected ["home" "recipe" "index.html"]]
-								(is (= (ensure-index path #{".html"}) expected))))
+  (testing "Creates folder for holding index.html")
+  (let [path ["home" "recipe"]
+        expected ["home" "recipe" "index.html"]]
+    (is (= (ensure-index path #{".html"}) expected))))
