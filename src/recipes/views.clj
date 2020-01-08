@@ -18,15 +18,15 @@
 
 (defmethod view :index [_]
   (layout [:h1 "Recipes"]
-  								[:ul (for [tag (all-tags)]
+          [:ul (for [tag (all-tags)]
                  [:li [:a {:href (path-for :recipes tag)} (name tag)]])]))
 
 (defn- recipe [{title :title description :description sources :sources}]
-		[:div [:h2 title]
-             [:p description]
-             [:ul (for [source sources]
-                    			[:li [:a {:class :source :href source} source]])]])
+  [:div [:h2 title]
+   [:p description]
+   [:ul (for [source sources]
+          [:li [:a {:class :source :href source} source]])]])
 
 (defmethod view :recipes [[_ tag]]
   (layout [:h1 "Recipes: " (name tag)]
-  								(map recipe (recipes-tag tag))))
+          (map recipe (recipes-tag tag))))
