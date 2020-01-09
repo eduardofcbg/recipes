@@ -21,7 +21,7 @@ jobs:
       run: lein run
       env:
         DIST_FOLDER: dist
-        BASE_URL: /${{ github.event.repository.name }} -- dist
+        BASE_URL: /${{ github.event.repository.name }}
     
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v2
