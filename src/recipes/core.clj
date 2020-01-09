@@ -1,5 +1,4 @@
 (ns recipes.core
-  (:import java.lang.System)
   (:require [environ.core :refer [env]]
             [recipes.read :refer [all-tags styles]]
             [recipes.build :refer [delete-build! build!]]
