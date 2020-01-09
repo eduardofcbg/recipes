@@ -1,5 +1,5 @@
 (ns recipes.core
-		(:import java.lang.System)
+  (:import java.lang.System)
   (:require [environ.core :refer [env]]
             [recipes.read :refer [all-tags styles]]
             [recipes.build :refer [delete-build! build!]]
@@ -8,8 +8,8 @@
 (def not-index #{".html" ".css"})
 
 (defn get-env [prop]
-	(or (get env prop)
-					(throw (IllegalStateException. (str prop " enviroment variable not provided")))))
+  (or (get env prop)
+      (throw (IllegalStateException. (str prop " enviroment variable not provided")))))
 
 (defonce folder (get-env :dist-folder))
 (defonce base-url (get-env :base-url))
