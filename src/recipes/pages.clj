@@ -1,47 +1,40 @@
 (ns recipes.pages
   (:require
    [clojure.set :refer [map-invert]]
-   [clojure.string :refer [join ends-with? includes?]]
-   [recipes.read :refer [public all-tags recipes-tag]]))
+   [clojure.string :refer [join ends-with? ends-with?]]
+   [environ.core :refer [env]]))
 
 (defmacro for-merge [seq-exprs body-expr]
   `(apply merge (for ~seq-exprs ~body-expr)))
 
-(def pages
-  {"index.html" [:index]
-   "tag" (for-merge [tag (all-tags)]
-                    {(name tag) [:recipes tag]})
-   "public" (for-merge [[name _] (seq (public))]
-                       {name [:public name]})})
-
-(defn generate
+(defn pages
   ([website]
-   (generate [] website))
+   (pages [] website))
   ([folder website]
    (for-merge [[name content] (seq website)
                :let [path (conj folder name)]]
               (if (map? content)
-                (generate path content)
+                (pages path content)
                 {path content}))))
 
 (defn ensure-index [full-path extentions]
   (let [name (last full-path)
         path (butlast full-path)]
-    (if (some #(includes? name %) extentions)
+    (if (some #(ends-with? name %) extentions)
       full-path
       (concat path [name "index.html"]))))
 
-(defonce base-url
-	(System/getenv "BASE_URL")) ; BAD, works for now
+(defn as-url [base-url path]
+  (let [relative-path (join "/" path)]
+    (str base-url "/" relative-path)))
 
-(defn as-url [path]
-	(let [relative-path (join "/" path)
-							_ (when-not base-url ; Fix this later
-																			(throw (Exception. "BASE_URL enviroment variable not set!")))]
-						(str base-url "/" relative-path)))
+(defn view->url [website]
+  (map-invert (pages website)))
 
-(defn path-for [& view]
-  (-> (generate pages)
-      (map-invert) ; TODO: memoize
+(def memo-view->url (memoize view->url))
+
+(defn path-for [website base-url view]
+  (-> website
+      (memo-view->url)
       (get view)
-      (as-url)))
+      ((partial as-url base-url))))

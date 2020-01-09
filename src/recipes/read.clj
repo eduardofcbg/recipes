@@ -3,12 +3,11 @@
    [clojure.java.io :refer [resource]]
    [clojure.set :refer [union]]))
 
-(defn- read-resource  [path]
+(defn- slurp-resource  [path]
   (slurp (resource path)))
 
-(defn public []
-  {"script.js" (read-resource  "public/script.js")
-   "main.css" (read-resource  "public/main.css")})
+(defn styles []
+  {"main.css" (slurp-resource  "public/main.css")})
 
 ; Read from markdown or database for example...
 

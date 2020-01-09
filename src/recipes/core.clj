@@ -1,22 +1,27 @@
 (ns recipes.core
-  (:import java.io.File)
-  (:require [clojure.java.io :refer [file delete-file make-parents]]
-            [clojure.string :refer [join]]
-            [recipes.views :refer [view]]
-            [recipes.pages :refer [pages generate ensure-index]]))
+		(:import java.lang.System)
+  (:require [environ.core :refer [env]]
+            [recipes.read :refer [all-tags styles]]
+            [recipes.build :refer [delete-build! build!]]
+            [recipes.pages :refer [for-merge path-for]]))
 
-(defn delete-generated! [folder]
-  (let [f (file folder)]
-    (when (.exists f)
-      (doseq [file (reverse (file-seq f))]
-        (delete-file file)))))
+(def not-index #{".html" ".css"})
 
-(def not-index #{".html" ".js" ".css"})
+(defn get-env [prop]
+	(or (get env prop)
+					(throw (IllegalStateException. (str prop " enviroment variable not provided")))))
 
-(defn -main [folder]
-  (delete-generated! folder)
-  (doseq [[path content] (seq (generate pages))
-          :let [full-path (into [folder] (ensure-index path not-index))
-                filesystem-path (join (java.io.File/separator) full-path)]]
-    (make-parents filesystem-path)
-    (spit filesystem-path (view content))))
+(defonce folder (get-env :dist-folder))
+(defonce base-url (get-env :base-url))
+
+(def website
+  {"index.html" [:index]
+   "tag" (for-merge [tag (all-tags)]
+                    {(name tag) [:recipes tag]})
+   "public" {"styles" (for-merge [[name _] (seq (styles))]
+                                 {name [:style name]})}})
+
+(defn -main []
+  (delete-build! folder)
+  (let [reverse-path-fn (partial path-for website base-url)]
+    (build! website folder not-index reverse-path-fn)))
